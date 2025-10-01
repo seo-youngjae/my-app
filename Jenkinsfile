@@ -29,12 +29,12 @@ pipeline {
       }
     }
 
-    stage('Build with Maven') {
-      steps {
-        echo 'Build with Maven'
-        sh 'mvn clean package -DskipTests'
-      }
-    }
+    // stage('Build with Maven') {
+    //   steps {
+    //     echo 'Build with Maven'
+    //     sh 'mvn clean package -DskipTests'
+    //   }
+    // }
 
     // 태그/이미지 경로 계산 (메타)
     stage('Compute Image Meta') {
