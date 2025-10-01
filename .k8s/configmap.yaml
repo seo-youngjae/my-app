@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sk199-custom-jenkins-config
+  namespace: skala-practice
+  labels:
+    app: sk199-custom-jenkins
+    component: config
+data:
+  jenkins.yaml: |
+    jenkins:
+      systemMessage: "SKALA DevOps Study - Jenkins based CI/CD"
+      numExecutors: 2
+      mode: NORMAL
+      
+      securityRealm:
+        local:
+          allowsSignup: true
+          users:
+          - id: "admin"
+            password: "admin"
+            
+      authorizationStrategy:
+        globalMatrix:
+          permissions:
+          - "Overall/Administer:admin"
+          - "Overall/Read:authenticated"
+          - "View/Read:authenticated"
+          - "Job/Discover:authenticated"
+          - "Job/Read:authenticated"
+          - "Job/Build:authenticated"
+          - "Job/Configure:authenticated"
+          - "Job/Create:authenticated"
+          
+    credentials:
+      system:
+        domainCredentials:
+        - credentials:
+          - usernamePassword:
+              scope: GLOBAL
+              id: "skala-github-id"
+              username: "himang10"
+              password: ""
+          - string:
+              scope: GLOBAL
+              id: "harbor-registry-url"
+              description: "Harbor Registry URL"
+              secret: "amdp-registry.skala-ai.com/skala25a"
+          - usernamePassword:
+              scope: GLOBAL
+              id: "skala-image-registry-id"
+              description: "Harbor Registry Credentials"
+              username: "robot$skala25a"
+              password: "1qB9cyusbNComZPHAdjNIFWinf52xaBJ"
+          - file:
+              scope: GLOBAL
+              id: "kubeconfig-id"
+              description: "EKS Cluster Kubeconfig"
+              fileName: "config"
+              secretBytes: "${readFileBase64:/var/jenkins_home/.kube/config}"
+              
+    unclassified:
+      location:
+        url: "https://sk199-ingress.skala25a.project.skala-ai.com/jenkins/"
+        adminAddress: "skala@skala-ai.com"
+

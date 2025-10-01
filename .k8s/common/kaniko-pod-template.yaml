@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins-build: "true"
+spec:
+  serviceAccountName: jenkins
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:debug
+    imagePullPolicy: Always
+    command:
+    - sleep
+    args:
+    - 99d
+    volumeMounts:
+    - name: docker-config
+      mountPath: /kaniko/.docker
+    env:
+    - name: DOCKER_CONFIG
+      value: /kaniko/.docker
+  - name: git
+    image: alpine/git:latest
+    command:
+    - sleep
+    args:
+    - 99d
+  volumes:
+  - name: docker-config
+    secret:
+      secretName: regcred
+      items:
+      - key: .dockerconfigjson
+        path: config.json
